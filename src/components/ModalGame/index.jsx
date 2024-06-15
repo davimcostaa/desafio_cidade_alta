@@ -2,12 +2,20 @@ import { useState, useCallback, useContext, useEffect } from 'react';
 import { LettersContext } from '@/context/Letter';
 import { generateArrayOfLetters } from '@/utils/generateLetters';
 import Image from 'next/image';
-import crown from "../../../public/images/crown.svg";
+import crown from "/public/images/crown.svg";
 import LetterBox from './LetterBox';
 import Button from '../Button';
 import CountdownTimer from '../Timer';
+import useSound from 'use-sound';
+import { motion } from 'framer-motion';
+
+import { transition1 } from '../../transitions/transitions';
 
 const ModalGame = ({ isOpen, toggleModal }) => {
+
+  const [correctSound] = useSound('/sounds/correct.mp3');
+  const [wrongSound] = useSound('/sounds/wrong.mp3');
+
   const { 
         letters, 
         setLetters, 
@@ -44,8 +52,10 @@ const ModalGame = ({ isOpen, toggleModal }) => {
 
         if (letters[currentPosition].toLowerCase() === event.key.toLowerCase()) {
           setPositionsCorrect(currentPosition);
+          correctSound();
         } else {
           setError(true);
+          wrongSound();
         }
         
         return newTypedLetters;
@@ -64,30 +74,48 @@ const ModalGame = ({ isOpen, toggleModal }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <motion.div 
+      animate={{opacity: 1, y: 0}} 
+      exit={{opacity: 0, y: '100%'}}
+      transition={transition1}
+      className="fixed inset-0 flex items-center justify-center z-50">
       <div className="fixed inset-0 bg-gray-600 opacity-75" onClick={toggleModal}></div>
-      <div className="bg-primary p-6 rounded-lg shadow-lg flex flex-col items-center justify-around z-10 w-1/2 h-1/2 relative">
+      <motion.div 
+          initial={{opacity: 0, y: '100%'}} 
+          animate={{opacity: 1, y: 0}} 
+          exit={{opacity: 0, y: '100%'}}
+          transition={transition1}
+          className="bg-primary p-6 rounded-lg shadow-lg 
+              flex flex-col items-center justify-around z-10 w-1/2 h-1/2 relative">
         <Image src={crown} className='absolute -top-4' alt='decoração de coroa' />
         {error ? (
-          <div className="flex flex-col items-center gap-10">
+          <motion.div 
+            initial={{ scale: 0, y: -50 }} 
+            animate={{ scale: 1, y: 0 }} 
+            transition={{ duration: 0.5, type: 'keyframes' }}
+            className="flex flex-col items-center gap-10">
             <h2 className="text-white font-bold text-2xl mt-16">Tente novamente!</h2>
             <Button 
                   onClick={handleGenerateLetters}
                   text="Tentar de novo" />
-          </div>
+          </motion.div>
         ) : (
           <>
             {positionsCorrect === 4 ? (
-              <div className="flex flex-col gap-14 items-center">
+              <motion.div 
+                  initial={{ scale: 0, y: -50 }} 
+                  animate={{ scale: 1, y: 0 }} 
+                  transition={{ duration: 0.5, type: 'spring' }}
+                  className="flex flex-col gap-14 items-center">
                 <h1 className="text-orange text-4xl font-semibold">Parabéns!</h1>
                 <Button 
                   onClick={handleGenerateLetters}
                   text="Jogar de novo" />
-              </div>
+              </motion.div>
               
             ) : (
-              <div className="flex flex-col gap-16 items-center">
-                <h2 className="text-white font-bold text-2xl ">CLIQUE NA SEQUÊNCIA CORRETA</h2>
+              <div className="flex flex-col gap-8 items-center">
+                <h2 className="text-white font-bold text-2xl mt-5">CLIQUE NA SEQUÊNCIA CORRETA</h2>
                 {lettersGenerated ?
                   <div className="flex flex-col items-center gap-4">
                     <div className="flex gap-10 mt-4">
@@ -106,8 +134,8 @@ const ModalGame = ({ isOpen, toggleModal }) => {
             )}
           </>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

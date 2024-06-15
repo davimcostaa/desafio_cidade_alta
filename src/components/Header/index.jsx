@@ -1,10 +1,9 @@
 import Image from 'next/image';
-import buttonDecoration from "../../../public/images/button-decoration.svg";
 
 const Header = () => {
   return (
     <div className="p-5">
-        <Image src='/images/logo.png' width={140} height={140} alt='Logo' /> 
+        <Image src='/images/logo.png' width={240} height={240} alt='Logo' /> 
     </div>
   )
 }

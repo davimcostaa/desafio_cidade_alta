@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React from 'react'
-import buttonDecoration from "../../../public/images/button-decoration.svg";
+import buttonDecoration from "/public/images/button-decoration.svg";
 
 const Button = ({onClick, text}) => {
   return (

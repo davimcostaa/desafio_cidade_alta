@@ -2,7 +2,7 @@ import { LettersContext } from '@/context/Letter';
 import React, { useState, useEffect, useContext } from 'react';
 
 const CountdownTimer = () => {
-  const initialTime = 3
+  const initialTime = 5
   const [timeRemaining, setTimeRemaining] = useState(initialTime);
 
   const { setError } = useContext(LettersContext);
