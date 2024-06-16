@@ -18,7 +18,7 @@ const LettersProvider = ({ children }) => {
             positionsCorrect,
             setPositionsCorrect,
             error,
-            setError
+            setError,
             }}>
       {children}
     </LettersContext.Provider>

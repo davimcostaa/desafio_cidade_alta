@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { LettersContext } from '@/context/Letter';
 import { generateArrayOfLetters } from '@/utils/generateLetters';
 import Image from 'next/image';
@@ -23,12 +23,14 @@ const ModalGame = ({ isOpen, toggleModal }) => {
         positionsCorrect,
         setPositionsCorrect,
         error,
-        setError
+        setError,
       } = useContext(LettersContext);
 
   const [lettersGenerated, setLettersGenerated] = useState(false);
+  const [timerKey, setTimerKey] = useState(0);
 
   const handleGenerateLetters = () => {
+    setTimerKey(prevKey => prevKey + 1); 
     setLettersGenerated(false);
     setLetters(generateArrayOfLetters());
     setError(false);
@@ -86,7 +88,7 @@ const ModalGame = ({ isOpen, toggleModal }) => {
           exit={{opacity: 0, y: '100%'}}
           transition={transition1}
           className="bg-primary p-6 rounded-lg shadow-lg 
-              flex flex-col items-center justify-around z-10 w-1/2 h-1/2 relative">
+              flex flex-col items-center justify-around z-10 lg:w-1/2 lg:h-1/2 h-3/6 m-2 relative">
         <Image src={crown} className='absolute -top-4' alt='decoração de coroa' />
         {error ? (
           <motion.div 
@@ -115,7 +117,7 @@ const ModalGame = ({ isOpen, toggleModal }) => {
               
             ) : (
               <div className="flex flex-col gap-8 items-center">
-                <h2 className="text-white font-bold text-2xl mt-5">CLIQUE NA SEQUÊNCIA CORRETA</h2>
+                <h2 className="text-white font-bold text-2xl mt-5 text-center">CLIQUE NA SEQUÊNCIA CORRETA</h2>
                 {lettersGenerated ?
                   <div className="flex flex-col items-center gap-4">
                     <div className="flex gap-10 mt-4">
@@ -123,12 +125,17 @@ const ModalGame = ({ isOpen, toggleModal }) => {
                         <LetterBox letter={letter} key={index} position={index} />
                       ))}
                     </div>
-                    <CountdownTimer />
+                    <CountdownTimer key={timerKey} />
+                    <Button 
+                      onClick={handleGenerateLetters}
+                      text="Reiniciar" />
                   </div>
                   :
-                  <Button 
-                    onClick={handleGenerateLetters}
-                    text="Iniciar" />
+                  <>
+                    <Button 
+                      onClick={handleGenerateLetters}
+                      text="Iniciar" /> 
+                  </>  
                 }
               </div>
             )}
